@@ -1,0 +1,52 @@
+# Version Control
+.git
+.gitignore
+.gitattributes
+
+# Dependencies
+/node_modules
+/vendor
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*.swn
+.DS_Store
+
+# Environment
+.env
+.env.backup
+.env.production
+
+# Build artifacts
+/public/hot
+/public/storage
+/public/build
+
+# Storage (will be mounted as volume)
+/storage/*.key
+/storage/app/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/logs/*
+
+# Testing
+.phpunit.result.cache
+phpunit.xml
+
+# Docker
+docker-compose.override.yml
+Dockerfile
+.dockerignore
+
+# Documentation
+*.md
+!README.md
+
+# Other
+npm-debug.log
+yarn-error.log

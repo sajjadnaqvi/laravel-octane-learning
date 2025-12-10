@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # Laravel Octane with Swoole
+  octane:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel_octane
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www/html
+      - ./storage:/var/www/html/storage
+    environment:
+      - APP_ENV=${APP_ENV:-local}
+      - APP_DEBUG=${APP_DEBUG:-true}
+      - APP_URL=${APP_URL:-http://localhost:8000}
+      - DB_HOST=${DB_HOST:-host.docker.internal}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_DATABASE=${DB_DATABASE:-octane_learning}
+      - DB_USERNAME=${DB_USERNAME:-root}
+      - DB_PASSWORD=${DB_PASSWORD:-}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+      - BROADCAST_DRIVER=redis
+    depends_on:
+      - redis
+    networks:
+      - octane_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # Redis for caching, sessions, and broadcasting
+  redis:
+    image: redis:7-alpine
+    container_name: laravel_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - octane_network
+    command: redis-server --appendonly yes
+
+  # Node.js for frontend assets (Vite)
+  node:
+    image: node:20-alpine
+    container_name: laravel_node
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    networks:
+      - octane_network
+
+networks:
+  octane_network:
+    driver: bridge
+
+volumes:
+  redis_data:
+    driver: local
