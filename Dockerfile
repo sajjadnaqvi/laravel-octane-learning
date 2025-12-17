@@ -62,5 +62,5 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-# Default command
+# Default command - removed --watch as it requires fswatch and can cause crashes
 CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=8000"]
